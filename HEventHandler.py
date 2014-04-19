@@ -15,7 +15,7 @@ class HEventHandler():
     def __init__(self, builder):
         self.builder = builder
 
-    def on_start_clicked(self):
+    def on_start_clicked(self, widget):
         """
         Starts mining process.
         :rtype : None
@@ -64,13 +64,17 @@ class HEventHandler():
             raise Exception('Error in dimention reduction!')
         # Begin of classification ###############################################################
         if builder.get_object('cdtrb').get_active():
-            self.classification_decision_tree(data_manager)
+            if self.classification_decision_tree(data_manager) is False:
+                return
         elif builder.get_object('csvmrb').get_active():
-            self.classification_support_vector_machine(data_manager)
+            if self.classification_support_vector_machine(data_manager) is False:
+                return
         elif builder.get_object('cnbrb').get_active():
-            self.classification_naive_bayes(data_manager)
+            if self.classification_naive_bayes(data_manager) is False:
+                return
         elif builder.get_object('cknnrb').get_active():
-            self.classification_k_nearest_neighbour(data_manager)
+            if self.classification_k_nearest_neighbour(data_manager) is False:
+                return
         else:
             raise Exception('Error in classification section!')
         # End of classification #################################################################
@@ -332,7 +336,6 @@ class HEventHandler():
 
     def classification_naive_bayes(self, data_manager):
         """
-
         :param data_manager:
         """
         obj = self.builder.get_object
@@ -348,8 +351,46 @@ class HEventHandler():
 
     def classification_k_nearest_neighbour(self, data_manager):
         """
-
         :param data_manager:
         """
         obj = self.builder.get_object
-        dm = data_manager
+        if obj('cknnirb').get_active():
+            iteration = 'single'
+        elif obj('cknniirb').get_active():
+            iteration = 'multiple'
+        else:
+            raise Exception('Error in classification->KNN->iteration')
+        try:
+            number_nearest_neighbour = int(obj('cknnnnne').get_text().strip())
+        except ValueError:
+            dialog = Gtk.MessageDialog(0, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, 'Input Number Error')
+            dialog.format_secondary_text('Please specify a correct number of nearest neighbour before clicking on start'
+                                         ' button.')
+            dialog.run()
+            dialog.destroy()
+            return False
+        if iteration == 'multiple':
+            try:
+                number_nearest_neighbour_iterator = int(obj('cknnnnnie').get_text().strip())
+            except ValueError:
+                dialog = Gtk.MessageDialog(0, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, 'Input Number Error')
+                dialog.format_secondary_text('Please specify a correct number of nearest neighbour iterator before '
+                                             'clicking on start button.')
+                dialog.run()
+                dialog.destroy()
+                return False
+        if obj('cknndiirb').get_active():
+            distance_effect = 'i'
+        elif obj('cknndisrb').get_active():
+            distance_effect = 's'
+        elif obj('cknndidrb').get_active():
+            distance_effect = 'd'
+        else:
+            raise Exception('Error in classification->KNN->distance influence')
+        parameters = dict()
+        parameters['iteration'] = iteration
+        parameters['number of nearest neighbour'] = number_nearest_neighbour
+        if iteration == 'multiple':
+            parameters['number of nearest neighbour iterator'] = number_nearest_neighbour_iterator
+        parameters['distance influence'] = distance_effect
+        data_manager.set_classification_method('KNN', parameters)
