@@ -18,10 +18,12 @@ class HEventHandler():
     def on_start_clicked(self, widget):
         """
         Starts mining process.
-        :rtype : None
+        :param widget:
         :return: :raise 'Error in classification section!':
         """
         builder = self.builder
+        obj = builder.get_object
+        print('Button:', widget.get_label().get_text(), ' pressed.')
         train_file = builder.get_object('intrfcb').get_filename()
         testfile = builder.get_object('intefcb').get_filename()
         if train_file is None:
@@ -59,7 +61,7 @@ class HEventHandler():
         if builder.get_object('dnrrb').get_active():
             pass
         elif builder.get_object('pcarb').get_active():
-            data_manager.doPCA(builder.get_object('drps').get_value())
+            data_manager.do_pca(builder.get_object('drps').get_value())
         else:
             raise Exception('Error in dimention reduction!')
         # Begin of classification ###############################################################
@@ -76,8 +78,15 @@ class HEventHandler():
             if self.classification_k_nearest_neighbour(data_manager) is False:
                 return
         else:
-            raise Exception('Error in classification section!')
+            raise Exception('Error in classification section.')
         # End of classification #################################################################
+        # Begin of model selection ##############################################################
+        if obj('mskfoldrb').get_active():
+            if self.model_selection_k_fold_cross_validation(data_manager) is False:
+                return
+        else:
+            raise Exception('Error in model selection section.')
+        # End of model selection ################################################################
 
     @staticmethod
     def on_window_close(*args):
@@ -299,7 +308,7 @@ class HEventHandler():
             dialog.destroy()
             return False
         try:
-            criterion_tolerance = int(obj('csvmcte').get_text().strip())
+            criterion_tolerance = float(obj('csvmcte').get_text().strip())
         except ValueError:
             dialog = Gtk.MessageDialog(0, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, 'Input Number Error')
             dialog.format_secondary_text('Please specify a correct criterion tolerance '
@@ -369,6 +378,7 @@ class HEventHandler():
             dialog.run()
             dialog.destroy()
             return False
+        number_nearest_neighbour_iterator = None
         if iteration == 'multiple':
             try:
                 number_nearest_neighbour_iterator = int(obj('cknnnnnie').get_text().strip())
@@ -394,3 +404,23 @@ class HEventHandler():
             parameters['number of nearest neighbour iterator'] = number_nearest_neighbour_iterator
         parameters['distance influence'] = distance_effect
         data_manager.set_classification_method('KNN', parameters)
+
+    def model_selection_k_fold_cross_validation(self, data_manager):
+        """
+        :param data_manager:
+        :return:
+        """
+        obj = self.builder.get_object
+        try:
+            number_fold = int(obj('mskfcvnfe').get_text().strip())
+        except ValueError:
+            dialog = Gtk.MessageDialog(0, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, 'Input Number Error')
+            dialog.format_secondary_text('Please specify a correct number of fold before clicking on start button.')
+            dialog.run()
+            dialog.destroy()
+            return False
+        shuffle = obj('mskfcvooscb').get_active()
+        parameters = dict()
+        parameters['fold_count'] = number_fold
+        parameters['shuffle'] = shuffle
+        data_manager.set_model_selection_method('k fold cross validation', parameters)
