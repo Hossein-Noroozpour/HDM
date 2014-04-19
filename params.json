@@ -1,0 +1,1 @@
+{"name":"HDM","tagline":"Hulixerian Data Miner","body":"# **HDM**\r\n### Hulixerian Data Miner \r\n\r\nA simple application for statistical analysis.\r\n\r\nRequirements:\r\npython3\r\ngtk3\r\nscikit\r\nnumpy\r\nscipy\r\n\r\nTested on Fdora 20","google":"python3 gtk3 scikit ml data-mining","note":"Don't delete this file! It's used internally to help with page regeneration."}
