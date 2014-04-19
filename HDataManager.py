@@ -8,6 +8,13 @@ from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import scale
 from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from math import sqrt
 from HFile import HFile
 
 
@@ -18,6 +25,7 @@ class HDataManager():
     def __init__(self, misimput='dni', trainfile='', testfile=''):
         self.classification_method = dict()
         self.model_selection_method = dict()
+        self.classifier = None
         self.tr = None
         self.ta = None
         self.te = None
@@ -131,3 +139,59 @@ class HDataManager():
             print(p, ':', parameters[p])
         self.model_selection_method['name'] = name
         self.model_selection_method['parameters'] = parameters
+
+    def start_mining(self):
+        """
+        Start data mining routines.
+        """
+        p = self.classification_method['parameters']
+        if 'decision tree' == self.classification_method['name']:
+            self.classifier = DecisionTreeClassifier(
+                criterion=p['criterion'],
+                max_features=p['maximum features'],
+                max_depth=p['maximum depth'],
+                min_samples_split=p['minimum samples split'],
+                min_samples_leaf=p['minimum samples leaf'],
+                random_state=p['random state'])
+        elif 'svm' == self.classification_method['name']:
+            self.classifier = SVC(
+                C=p['fault penalty'],
+                kernel=p['kernel type'],
+                degree=p['kernel degree'],
+                gamma=p['kernel gamma'],
+                coef0=p['kernel coefficient'],
+                tol=p['coefficient tolerance'],
+                class_weight=p['classes weights'],
+                probability=p['probability estimation'],
+                shrinking=p['shrinking heuristic']
+            )
+        elif 'naive bayes' == self.classification_method['name']:
+            if 'gaussian' == p:
+                self.classifier = GaussianNB()
+            elif 'multinomial' == p:
+                self.classifier = MultinomialNB()
+            elif 'bernoulli' == p:
+                self.classifier = BernoulliNB()
+            else:
+                raise Exception('Error in: data manager->naive bayes')
+        elif 'KNN' == self.classification_method['name']:
+            if 'i' == p['distance influence']:
+                weights = 'distance'
+            elif 's' == p['distance influence']:
+                weights = lambda l: map(lambda d: 1. / (sqrt(d) + .0001), l)
+            elif 'd' == p['distance influence']:
+                weights = lambda l: map(lambda d: 1. - d, l)
+            else:
+                raise Exception('Error in: data manager->KNN')
+            if 'single' == p['iteration']:
+                self.classifier = [KNeighborsClassifier(
+                    n_neighbors=p['number of nearest neighbour'],
+                    weights=weights
+                )]
+            elif 'multiple' == p['iteration']:
+                start = p['number of nearest neighbour']
+                end = p['number of nearest neighbour iterator']
+                self.classifier = [KNeighborsClassifier(n_neighbors=i, weights=weights) for i in range(start, end)]
+            else:
+                raise Exception('Error in: data manager->classification->KNN')
+        
