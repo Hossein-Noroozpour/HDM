@@ -1,1 +1,7 @@
-Hulixerian Data Miner ( python3-gtk3-scikit-numpy-scipy)
+Hulixerian Data Miner
+Requirements:
+    Python3
+    GTK3
+    Scikit-Learner
+    Numpy
+    Scipy

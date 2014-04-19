@@ -3,6 +3,8 @@
 """
 Data manager module.
 """
+import numpy
+
 __author__ = 'Hossein Noroozpour Thany Abady'
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import scale
@@ -14,6 +16,8 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import KFold
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from math import sqrt
 from HFile import HFile
 
@@ -26,6 +30,7 @@ class HDataManager():
         self.classification_method = dict()
         self.model_selection_method = dict()
         self.classifier = None
+        self.selector = None
         self.tr = None
         self.ta = None
         self.te = None
@@ -48,7 +53,7 @@ class HDataManager():
         elif misimput == 'mei':
             self.median_impute()
         elif misimput == 'mfi':
-            self.mfimput()
+            self.most_frequent_impute()
         else:
             raise Exception('Error: Unknown missing imputation method!')
 
@@ -59,8 +64,8 @@ class HDataManager():
         tr = HFile(self.trfile)
         te = HFile(self.tefile)
         imp = Imputer(missing_values=-1)
+        self.ta = tr.classes
         self.tr = imp.fit_transform(tr.data)
-        self.ta = imp.fit_transform(tr.classes)
         self.te = imp.fit_transform(te.data)
 
     def median_impute(self):
@@ -71,10 +76,10 @@ class HDataManager():
         te = HFile(self.tefile)
         imp = Imputer(missing_values=-1, strategy='median')
         self.tr = imp.fit_transform(tr.data)
-        self.ta = imp.fit_transform(tr.classes)
+        self.ta = tr.classes
         self.te = imp.fit_transform(te.data)
 
-    def mfimput(self):
+    def most_frequent_impute(self):
         """
         impute
         """
@@ -82,7 +87,7 @@ class HDataManager():
         te = HFile(self.tefile)
         imp = Imputer(missing_values=-1, strategy='most_frequent')
         self.tr = imp.fit_transform(tr.data)
-        self.ta = imp.fit_transform(tr.classes)
+        self.ta = tr.classes
         self.te = imp.fit_transform(te.data)
 
     def standardize(self):
@@ -194,4 +199,21 @@ class HDataManager():
                 self.classifier = [KNeighborsClassifier(n_neighbors=i, weights=weights) for i in range(start, end)]
             else:
                 raise Exception('Error in: data manager->classification->KNN')
-        
+        p = self.model_selection_method['parameters']
+        if 'k fold cross validation' == self.model_selection_method['name']:
+            self.selector = KFold(len(self.ta), p['fold count'], shuffle=p['shuffle'])
+        else:
+            raise Exception('Error in: data manager->model selection->KFold')
+        # Start ########################################################################################################
+        self.ta = numpy.array(self.ta)
+        self.tr = numpy.array(self.tr)
+        for train_indices, test_indices in self.selector:
+            x_train, x_test = self.tr[train_indices], self.tr[test_indices]
+            y_train, y_test = self.ta[train_indices], self.ta[test_indices]
+            y_prob = self.classifier.fit(x_train, y_train).predict(x_test)
+            print('Score:', self.classifier.score(x_test, y_test))
+            print('Accuracy score:', accuracy_score(y_test, y_prob))
+            print('Recall score:', recall_score(y_test, y_prob))
+            print('Precision score:', precision_score(y_test, y_prob))
+            print('F1 score:', f1_score(y_test, y_prob))
+            print('Confusion matrix:', confusion_matrix(y_test, y_prob))

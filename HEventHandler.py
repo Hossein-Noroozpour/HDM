@@ -423,6 +423,6 @@ class HEventHandler():
             return False
         shuffle = obj('mskfcvooscb').get_active()
         parameters = dict()
-        parameters['fold_count'] = number_fold
+        parameters['fold count'] = number_fold
         parameters['shuffle'] = shuffle
         data_manager.set_model_selection_method('k fold cross validation', parameters)

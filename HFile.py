@@ -1,13 +1,20 @@
 #!/usr/bin/python3.3
+# coding=utf-8
+"""
+Module for file reading.
+"""
 __author__ = 'Hossein Noroozpour Thany Abady'
 
 
 class HFile():
+    """
+    Class for file reading.
+    """
     def __init__(self, file_name, ignore_undefined=False, verbose=0):
         """
         :param file_name: File path + file name
         """
-        file = open(file_name, 'r')
+        file = open(file_name)
         self.relation = None
         self.attributes = list()
         self.classes = list()
@@ -76,7 +83,7 @@ class HFile():
                             print("Error in file data reading line:", line_number)
                             print(args[i], " is not in ", self.attributes[i][0])
                             exit(1)
-            if (class_index != -1 and len(data) != len(self.attributes) -1) or\
+            if (class_index != -1 and len(data) != len(self.attributes) - 1) or\
                     (class_index == -1 and len(data) != len(self.attributes)):
                 if ignored:
                     continue
