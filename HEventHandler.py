@@ -23,7 +23,7 @@ class HEventHandler():
         """
         builder = self.builder
         obj = builder.get_object
-        print('Button:', widget.get_label().get_text(), ' pressed.')
+        print('Button:', widget.get_label(), ' pressed.')
         train_file = builder.get_object('intrfcb').get_filename()
         testfile = builder.get_object('intefcb').get_filename()
         if train_file is None:

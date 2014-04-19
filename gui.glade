@@ -2129,7 +2129,7 @@ For example:
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkEntry" id="entry1">
+                                                  <object class="GtkEntry" id="cknnnnne">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="hexpand">True</property>
@@ -2143,7 +2143,7 @@ For example:
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkEntry" id="entry2">
+                                                  <object class="GtkEntry" id="cknnnnnie">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="hexpand">True</property>
