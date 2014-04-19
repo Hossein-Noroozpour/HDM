@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # coding=utf-8
 """
 Module for GUI Event Handling.
@@ -87,6 +88,7 @@ class HEventHandler():
         else:
             raise Exception('Error in model selection section.')
         # End of model selection ################################################################
+        data_manager.start_mining()
 
     @staticmethod
     def on_window_close(*args):
