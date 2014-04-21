@@ -20,7 +20,7 @@ class HFile():
         self.classes = list()
         self.data = list()
         line_number = 0
-        class_index = -1
+        self.class_index = -1
         attribute_index = 0
         for line in file:
             line_number += 1
@@ -28,7 +28,7 @@ class HFile():
                 lbind = line.find('{')
                 attname = line[11: lbind].strip()
                 if attname == 'class':
-                    class_index = attribute_index
+                    self.class_index = attribute_index
                 attribute_index += 1
                 if 0 < verbose:
                     print('Attribute is:', attname)
@@ -53,7 +53,7 @@ class HFile():
             data = list()
             ignored = False
             for i in range(len(args)):
-                if i == class_index:
+                if i == self.class_index:
                     try:
                         self.classes.append(self.attributes[i][1].index(args[i]))
                     except ValueError:
@@ -83,14 +83,45 @@ class HFile():
                             print("Error in file data reading line:", line_number)
                             print(args[i], " is not in ", self.attributes[i][0])
                             exit(1)
-            if (class_index != -1 and len(data) != len(self.attributes) - 1) or\
-                    (class_index == -1 and len(data) != len(self.attributes)):
+            if (self.class_index != -1 and len(data) != len(self.attributes) - 1) or\
+                    (self.class_index == -1 and len(data) != len(self.attributes)):
                 if ignored:
                     continue
                 print('Error in file::', file_name, ' line:', line_number)
                 print("number of component are not equal to attributes.")
                 exit(1)
             self.data.append(data)
+
+    @staticmethod
+    def save_result(file_name, features, labels, attributes, label_index):
+        """
+        :param file_name:
+        :param features:
+        :param labels:
+        :param attributes:
+        :param label_index:
+        """
+        f = open(file_name, 'w')
+        s = '@relation car\n\n'
+        for a in attributes:
+            s += '@attribute ' + a[0] + '        {'
+            for i in range(len(a[1]) - 1):
+                s += a[1][i] + ', '
+            s += a[1][len(a[1]) - 1] + '}\n'
+        s += '\n\n@data\n'
+        for k in range(len(labels)):
+            d = features[k]
+            l = labels[k]
+            for i in range(len(d)):
+                if d[i] == -1:
+                    s += '?,'
+                else:
+                    s += attributes[i][1][d[i]] + ','
+            s += attributes[label_index][1][l] + '\n'
+        s += '\n\n\n'
+        f.write(s)
+        f.close()
+
 if '__main__' == __name__:
     hf = HFile('/run/media/thany/AE1247021246CF51/Users'
             '/Thany/Documents/Lessons/DataMining/first/DM-Project-1/data.arff')

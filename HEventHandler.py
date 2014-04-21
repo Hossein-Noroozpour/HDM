@@ -27,6 +27,7 @@ class HEventHandler():
         print('Button:', widget.get_label(), ' pressed.')
         train_file = builder.get_object('intrfcb').get_filename()
         testfile = builder.get_object('intefcb').get_filename()
+        outfile = builder.get_object('outfcb').get_filename()
         if train_file is None:
             dialog = Gtk.MessageDialog(0, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, "File Error")
             dialog.format_secondary_text('Please specify a train file before clicking on start button.')
@@ -40,15 +41,15 @@ class HEventHandler():
             dialog.destroy()
             return
         if builder.get_object('dvirb').get_active():
-            data_manager = HDataManager('dvi', train_file, testfile)
+            data_manager = HDataManager('dvi', train_file, testfile, outfile)
         elif builder.get_object('irrb').get_active():
-            data_manager = HDataManager('ir', train_file, testfile)
+            data_manager = HDataManager('ir', train_file, testfile, outfile)
         elif builder.get_object('mirb').get_active():
-            data_manager = HDataManager('mi', train_file, testfile)
+            data_manager = HDataManager('mi', train_file, testfile, outfile)
         elif builder.get_object('meirb').get_active():
-            data_manager = HDataManager('mei', train_file, testfile)
+            data_manager = HDataManager('mei', train_file, testfile, outfile)
         elif builder.get_object('mfirb').get_active():
-            data_manager = HDataManager('mfi', train_file, testfile)
+            data_manager = HDataManager('mfi', train_file, testfile, outfile)
         else:
             raise Exception('Error in missing part!')
         if builder.get_object('rrb').get_active():
