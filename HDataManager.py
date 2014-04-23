@@ -18,7 +18,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
-from math import sqrt
+from math3d import sqrt
 from HFile import HFile
 from HNearestNeighborsClassifier import HNearestNeighboursClassifier
 import time
