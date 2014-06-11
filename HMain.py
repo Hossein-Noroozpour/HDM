@@ -4,7 +4,9 @@
 Module for GUI initializing.
 """
 from gi.repository import Gtk
-from HEventHandler import HEventHandler
+
+from hml.ui import HEventHandler
+
 
 __author__ = 'Hossein Noroozpour Thany Abady'
 

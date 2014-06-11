@@ -6,7 +6,7 @@ Module for K nearest neighbours.
 
 __author__ = 'Hossein Noroozpour Thany Abady'
 
-from math3d import sqrt
+#from math3d import sqrt
 import numpy
 
 

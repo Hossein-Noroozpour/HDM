@@ -3,9 +3,10 @@
 """
 Module for GUI Event Handling.
 """
+from hml.core import HDataManager
+
 __author__ = 'Hossein Noroozpour Thany Abady'
 from gi.repository import Gtk
-from HDataManager import HDataManager
 
 
 class HEventHandler():
