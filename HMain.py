@@ -3,11 +3,9 @@
 """
 Module for initializing.
 """
+__author__ = 'Hossein Noroozpour Thany Abady'
 from gi.repository import Gtk
 from hml.ui.HEventHandler import HEventHandler
-
-
-__author__ = 'Hossein Noroozpour Thany Abady'
 
 
 class HGUI():
