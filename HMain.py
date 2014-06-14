@@ -34,7 +34,7 @@ class HGUI():
 
 
 if '__main__' == __name__:
-    if sys.argv[1] == 'test-001':
+    if len(sys.argv) > 1 and sys.argv[1] == 'test-001':
         from hml.testunits.test_001 import test001
         test001()
     else:
