@@ -6,6 +6,7 @@ Module for initializing.
 __author__ = 'Hossein Noroozpour Thany Abady'
 from gi.repository import Gtk
 from hml.ui.HEventHandler import HEventHandler
+import sys
 
 
 class HGUI():
@@ -13,7 +14,7 @@ class HGUI():
     GUI Initializer.
     """
 
-    def __init__(self, glade_file='hml//ui//gui.glade'):
+    def __init__(self, glade_file='hml/ui/gui.glade'):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(glade_file)
         event_handler = HEventHandler(self.builder)
@@ -33,5 +34,9 @@ class HGUI():
 
 
 if '__main__' == __name__:
-    h = HGUI()
-    Gtk.main()
+    if sys.argv[1] == 'test-001':
+        from hml.testunits.test_001 import test001
+        test001()
+    else:
+        h = HGUI()
+        Gtk.main()
