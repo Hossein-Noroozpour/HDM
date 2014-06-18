@@ -20,7 +20,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import KFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
-#from math3d import sqrt
+from math import sqrt
 from hml.classification.HNearestNeighborsClassifier import HNearestNeighboursClassifier
 import time
 
