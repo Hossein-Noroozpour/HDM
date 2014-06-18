@@ -45,7 +45,7 @@ def test001(arg_list):
     else:
         print('Error in command line arguments.')
         raise 0
-    selection = KFold(len(e.data))
+    selection = KFold(e.datlen)
     print(arg_list)
     for train_index, test_index in selection:
         x_train = e.data[train_index]
